@@ -7,12 +7,12 @@ const SubMenu = Menu.SubMenu;
 const TabPane = Tabs.TabPane;
 const MenuItemGroup = Menu.ItemGroup;
 
-export default class MobileHeader extends React.Component{
+class MobileHeader extends React.Component{
   constructor(){
     super();
     this.state={
       current:'top',
-      modalVisiable:false,
+      modalVisible:false,
       action:'login',
       hasLogined:false,
       userNickName:'',
@@ -21,7 +21,7 @@ export default class MobileHeader extends React.Component{
   };
 
   setModalVisible(value){
-    this.setState({modalVisiable:value});
+    this.setState({modalVisible:value});
   };
 
   componentWillMount(){
@@ -78,6 +78,53 @@ export default class MobileHeader extends React.Component{
 
   render(){
     let {getFieldProps}=this.props.form;
-    return();
+    const userShow=this.state.hasLogined?
+      <Link to={`/usercenter`}>
+        <Icon type="inbox"/>
+      </Link>:<Icon type="setting" onClick={this.login.bind(this)}/>;
+    return(
+      <div id="mobileheader">
+        <header>
+          <a href="/">
+            <img src="./app/images/logo.png" alt="logo"/>
+          </a>
+          {userShow}
+        </header>
+        <Modal title="用户中心" wrapClassName="vertical-center-modal"
+                visible={this.state.modalVisible}
+                onCancel={()=>this.setState(modalVisible:false)}
+                onOk={()=>this.setState({modalVisible:false})}
+                okText="关闭">
+            <Tabs type="card" onChange={this.callback.bind(this)}>
+              <TabPane tab="登录" key="1">
+                <Form horizontal onSubmit={this.handleSumbit.bind(this)}>
+                  <FormItem label="账户">
+                    <Input placeholder="请输入您的帐号" {...getFieldProps('userName')}/>
+                  </FormItem>
+                  <FormItem label="密码">
+                    <Input placeholder="请输入您的密码" {...getFieldProps('password')}/>
+                  </FormItem>
+                  <Button type="primary" htmlType="submit">登录</Button>
+                </Form>
+              </TabPane>
+              <TabPane tab="注册" key="2">
+  							<Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+  								<FormItem label="账户">
+  									<Input placeholder="请输入您的账号" {...getFieldProps('r_userName')}/>
+  								</FormItem>
+  								<FormItem label="密码">
+  									<Input type="password" placeholder="请输入您的密码" {...getFieldProps('r_password')}/>
+  								</FormItem>
+  								<FormItem label="确认密码">
+  									<Input type="password" placeholder="请再次输入您的密码" {...getFieldProps('r_confirmPassword')}/>
+  								</FormItem>
+  								<Button type="primary" htmlType="submit">注册</Button>
+  							</Form>
+						  </TabPane>
+            </Tabs>
+        </Modal>
+      </div>
+    );
   };
 }
+export default MobileHeader =Form.create({})(MobileHeader);
